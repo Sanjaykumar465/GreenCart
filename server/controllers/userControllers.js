@@ -82,3 +82,43 @@ export const login = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+//check user Auth : /api/user/is-auth
+
+export const isAuth = async (req, res) => {
+  try {
+    // User is already attached to req by authUser middleware
+    return res.json({
+      success: true,
+      user: req.user,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// logout user: /api/user/logout
+
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    });
+    return res.json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
