@@ -1,4 +1,4 @@
-import { createContext, useEffect, useContext, useState } from "react";
+import { createContext, useEffect, useContext, useState, use } from "react";
 import { useNavigate } from "react-router-dom";
 // import { dummyProducts } from "../assets/assets";
 import toast from "react-hot-toast";
@@ -116,6 +116,24 @@ export const AppContextProvider = ({ children }) => {
     fetchSeller();
     fetchProducts();
   }, []);
+
+  //update database cart items
+
+  useEffect(() => {
+    const updateCart = async () => {
+      try {
+        const { data } = await axios.post("/api/cart/update", { cartItems });
+        if (data.success) {
+          toast.success(data.message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    if (user) {
+      updateCart();
+    }
+  }, [cartItems]);
 
   const value = {
     navigate,
