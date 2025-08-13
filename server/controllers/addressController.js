@@ -3,9 +3,9 @@ import Address from "../models/Address.js";
 // Add Address : /api/address/add
 export const addAddress = async (req, res) => {
   try {
-    const { address, userId } = req.body;
+    const { address } = req.body;
+    const userId = req.user._id; // Get from JWT middleware
 
-    // Validate required fields manually (better error messages)
     const requiredFields = [
       "firstName",
       "lastName",
@@ -17,6 +17,7 @@ export const addAddress = async (req, res) => {
       "country",
       "phone"
     ];
+
     for (let field of requiredFields) {
       if (!address[field]) {
         return res.status(400).json({
@@ -29,7 +30,7 @@ export const addAddress = async (req, res) => {
     await Address.create({ ...address, userId });
     res.json({ success: true, message: "Address added successfully" });
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -37,11 +38,11 @@ export const addAddress = async (req, res) => {
 // Get Address : /api/address/get
 export const getAddress = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.user._id; // ✅ No body for GET, get from middleware
     const addresses = await Address.find({ userId });
-    res.json({ success: true, addresses }); // ✅ fixed variable name
+    res.json({ success: true, addresses });
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };

@@ -14,7 +14,7 @@ const orderSchema = new mongoose.Schema(
           required: true,
           ref: "product",
         },
-        quality: {
+        quantity: {
           type: Number,
           required: true,
         },
@@ -22,7 +22,7 @@ const orderSchema = new mongoose.Schema(
     ],
     amount: {
       type: Number,
-      require: true,
+      required: true,
     },
     address: {
       type: String,
@@ -46,6 +46,7 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Order = mongoose.models.order || mongoose.model("model", orderSchema);
+// ✅ Use "Order" as model name, not "model"
+const Order = mongoose.models.Order || mongoose.model("Order", orderSchema);
 
 export default Order;
