@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -13,11 +14,22 @@ const Navbar = () => {
     setSearchQuery,
     searchQuery,
     getCartCount,
+    axios,
   } = useAppContext();
 
   const logout = async () => {
-    setUser(null);
-    navigate("/");
+    try {
+      const { data } = await axios.get("api/user/logout");
+      if (data.success) {
+        toast.success(data.message);
+        setUser(null);
+        navigate("/");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {
@@ -117,7 +129,11 @@ const Navbar = () => {
           aria-label="Menu"
           className="p-2 rounded-md hover:bg-gray-100 transition-colors"
         >
-          <img src={open ? assets.close_icon : assets.menu_icon} alt="menu" className="w-6 h-6" />
+          <img
+            src={open ? assets.close_icon : assets.menu_icon}
+            alt="menu"
+            className="w-6 h-6"
+          />
         </button>
       </div>
 
